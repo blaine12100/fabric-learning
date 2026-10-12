@@ -13,7 +13,7 @@
 
 **A study buddy for Microsoft Fabric that reads everything, cites everything, and remembers what you already know.**
 
-Microsoft Fabric ships faster than anyone can read. A single FabCon produces dozens of blog posts, hours of sessions, hundreds of Reddit comments and a wave of new community tools on GitHub. Answers that were right six months ago are quietly wrong today. `fabric-learning` is a Claude Code plugin that does the reading for you: it goes to the official blog, Microsoft Learn, certification training, Reddit, the Fabric Community forum, Fabric Ideas, YouTube transcripts and GitHub, and turns all of it into an answer pitched at *your* level, with a link behind every claim.
+Microsoft Fabric ships faster than anyone can read. A single event like FabCon produces dozens of blog posts, hours of sessions, hundreds of Reddit comments and a wave of new community tools on GitHub. Answers that were right six months ago are most likely wrong today. `fabric-learning` is a Claude Code plugin that does the hard part for you: it goes to the official blog, Microsoft Learn, Microsoft Fabric certificaiton courses, Reddit, the Fabric Community forum, Fabric Ideas, YouTube transcripts and GitHub, and turns all of it into an answer pitched at *your* level, with a link behind every claim.
 
 > [!IMPORTANT]
 > **This is not a Microsoft product**, and it isn't affiliated with or endorsed by Microsoft. It's an independent, community-built learning tool that **collects and collates publicly available information** so you can keep up with Microsoft Fabric. It never connects to your Fabric tenant, and it can't change anything in it. Always check the linked sources before acting on anything, especially features in preview.
@@ -24,7 +24,7 @@ Microsoft Fabric ships faster than anyone can read. A single FabCon produces doz
 
 | The problem | What the plugin does about it |
 |---|---|
-| News is scattered across a blog, docs, forums, Reddit, YouTube and GitHub | Searches all of them **in parallel** and merges duplicates into single items |
+| News and tools for Fabric are scattered across different sources like blogs, docs, forums, Reddit, YouTube and GitHub | Searches all of them **in parallel** and merges duplicates into single items |
 | LLMs answer Fabric questions confidently, from training data that's months out of date | **No source, no statement.** Every factual sentence carries a `[n]` citation, and anything unverifiable is dropped or labelled |
 | Community tools (like FUAM) never show up in official channels | Open GitHub discovery, plus the [fabricstack.dev](https://fabricstack.dev) catalogue, with **a reserved lane for brand-new tools** so stars don't bury them |
 | Generic answers ignore where you're coming from | A short onboarding builds a local profile. Explanations map Fabric onto what you already know (Databricks, .NET, Power BI…) and skip what you've told it you know |
@@ -150,23 +150,23 @@ Skipped onboarding? No problem: the other skills offer it once and still answer 
 
 | Group | Sources | Used for |
 |---|---|---|
-| **Official** | Fabric Updates blog · Power BI Updates blog · Microsoft Learn docs · DP-600 / DP-700 training · Fabric roadmap | What Fabric does, what changed, release status |
+| **Official** | Fabric Updates blog · Power BI Updates blog · Microsoft Learn docs · DP-600 / DP-700 training materials · Fabric roadmap | What Fabric does, what changed, release status |
 | **Tools & packages** | GitHub (open discovery, releases, issues) · [fabricstack.dev](https://fabricstack.dev) | Community and Microsoft tools, new launches, package updates |
 | **Community** | r/MicrosoftFabric · Fabric Community forum · Fabric Ideas · YouTube transcripts · community blogs | Real-world experience, fixes, gotchas, what people are asking for |
 
 ### The trust model
 
 - **Every claim has a link.** Sources are listed with their authority and engagement, e.g. `r/MicrosoftFabric · community · 23 comments · Mar 2026`, or `Microsoft Learn · official · updated Jun 2026`.
-- **Authority needs evidence.** "Expert" means a visible badge or role, such as Microsoft Employee flair or Super User. A famous-sounding name isn't enough.
+- **Authority needs evidence.** "Expert" means a visible badge or role, such as Microsoft Employee flair or Super User.
 - **Official confirms; community reacts.** A feature only counts as *released* if Microsoft says so. Rumours are labelled `unconfirmed — community report`.
-- **Conflicts are shown, not hidden.** When Reddit and the docs disagree, you see both, with dates.
+- **Conflicts are shown as it is.** When Reddit and the docs disagree, you see both, with dates.
 - **Popularity ≠ correctness.** Upvotes and stars rank community items, but never outrank authority, and new tools get a protected place.
 
 ### How research runs, and why sub-agents are capped at two
 
 Most questions are answered by **one Claude, with no sub-agents**. It runs every source script at once in one call, and all its web look-ups at once in another.
 
-Sub-agents (helper Claudes that read in parallel) are used only when the work genuinely splits into independent pieces: a catch-up spanning several months, a comparison with separate parts, or several long videos or threads to read. Even then:
+Sub-agents (helper Claudes that read in parallel) are used only when the work splits into independent pieces: a catch-up spanning several months, a comparison with separate parts, or several long videos or threads to read. Even then:
 
 | Rule | Why |
 |---|---|
@@ -175,7 +175,7 @@ Sub-agents (helper Claudes that read in parallel) are used only when the work ge
 | **They run on a cheaper model (Sonnet)** | They only gather and summarise sources, with restricted tools. The main conversation keeps your model for judging, verifying and writing. Anthropic found that a stronger lead model with Sonnet sub-agents beat a single top model by 90% on its research evaluation ([same article](https://www.anthropic.com/engineering/multi-agent-research-system)). Claude Code recommends routing tasks to lower-cost models to [control costs](https://code.claude.com/docs/en/sub-agents). |
 | **They never talk to you, write your profile or check citations** | The main conversation merges their findings, spot-checks them, runs the citation check and writes the log. A failed sub-agent's share is finished inline, or reported as a gap. |
 
-You never need to ask for sub-agents or turn them off: the plugin decides.
+The plugin decides when to run the sub-agents. That's one less thing for you to worry about :-)
 
 ---
 
@@ -196,11 +196,10 @@ Everything lives in plain files on your machine:
 
 ---
 
-## Honest limitations
+## Current limitations
 
 - **It researches live, so it isn't instant.** A deep question or a big catch-up can take a few minutes and a fair number of tokens. Simple questions stay light; heavy reading is handed to at most two sub-agents at a time, and only when it's worth it (see [How research runs](#how-research-runs-and-why-sub-agents-are-capped-at-two)).
 - **Some sites resist automation.** The Fabric Community site blocks page fetches, so the plugin uses its public RSS feeds instead. Those carry full post text, but no kudos or vote counts. Reddit's RSS is rate-limited, so community reaction is sometimes thin, and the digest says so when it is.
-- **LinkedIn isn't used.** There's no public API, and scraping it breaks LinkedIn's terms.
 - **It can still be wrong.** Citations make mistakes *checkable*, not impossible. Click through before you act, especially on preview features.
 
 ---
@@ -253,7 +252,7 @@ Source scripts are thin adapters over `scripts/lib/`, so a new source is usually
 4. Add a row to the source table in `references/sourcing-rules.md` (what it's for, how it's accessed, its authority).
 5. Add tests for any parsing in `tests/`, and run `python3 -m unittest discover tests`.
 
-Scripts use only the Python standard library (3.7+), so nothing needs installing.
+Scripts use only the Python standard library (3.7+) so it's plug and play.
 
 ## Acknowledgements
 
