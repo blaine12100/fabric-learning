@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" width="1200" height="360" role="img" aria-labelledby="t d">
+  <title id="t">fabric-learning</title>
+  <desc id="d">A Claude Code plugin that turns the scattered Microsoft Fabric ecosystem into cited, personalised learning.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b2a2e"/>
+      <stop offset="1" stop-color="#123e3a"/>
+    </linearGradient>
+    <linearGradient id="weave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3dd6c6"/>
+      <stop offset="1" stop-color="#a7f3d0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="360" rx="24" fill="url(#bg)"/>
+  <!-- woven threads: many sources converging into one cited answer -->
+  <g fill="none" stroke-linecap="round" opacity="0.9">
+    <path d="M290 70 C 420 70, 420 180, 640 180" stroke="#3dd6c6" stroke-width="3"/>
+    <path d="M290 115 C 420 115, 430 180, 640 180" stroke="#5eead4" stroke-width="3"/>
+    <path d="M290 160 C 420 160, 440 180, 640 180" stroke="#99f6e4" stroke-width="3"/>
+    <path d="M290 205 C 420 205, 440 180, 640 180" stroke="#fcd34d" stroke-width="3"/>
+    <path d="M290 250 C 420 250, 430 180, 640 180" stroke="#fdba74" stroke-width="3"/>
+    <path d="M290 295 C 420 295, 420 180, 640 180" stroke="#f9a8d4" stroke-width="3"/>
+    <path d="M640 180 L 700 180" stroke="url(#weave)" stroke-width="10"/>
+  </g>
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" fill="#cbd5e1">
+    <text x="70" y="75">Fabric blog</text>
+    <text x="70" y="120">Microsoft Learn</text>
+    <text x="70" y="165">DP-600 / DP-700 training</text>
+    <text x="70" y="210">GitHub &amp; fabricstack</text>
+    <text x="70" y="255">Reddit &amp; Community forum</text>
+    <text x="70" y="300">YouTube &amp; Fabric Ideas</text>
+  </g>
+  <circle cx="640" cy="180" r="12" fill="#a7f3d0"/>
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="730" y="150" font-size="56" font-weight="700" fill="#f8fafc">fabric-learning</text>
+    <text x="732" y="192" font-size="22" fill="#a7f3d0">Keep up with Microsoft Fabric.</text>
+    <text x="732" y="222" font-size="22" fill="#a7f3d0">Every answer traceable to a source.</text>
+    <text x="732" y="270" font-size="15" fill="#94a3b8">A Claude Code plugin · unofficial · learning only</text>
+  </g>
+</svg>

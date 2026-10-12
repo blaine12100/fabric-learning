@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" width="1200" height="520" role="img" aria-labelledby="t d">
+  <title id="t">How fabric-learning works</title>
+  <desc id="d">Your profile shapes every request. Four skills share one research pipeline: plan, gather sources in parallel, verify citations, then answer and log progress.</desc>
+  <rect width="1200" height="520" rx="20" fill="#f8fafc"/>
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    <!-- profile -->
+    <rect x="40" y="40" width="240" height="440" rx="14" fill="#ecfeff" stroke="#0e7490" stroke-width="2"/>
+    <text x="160" y="78" text-anchor="middle" font-size="20" font-weight="700" fill="#0e7490">Your profile</text>
+    <text x="160" y="102" text-anchor="middle" font-size="13" fill="#155e75">local · no PII · yours to edit</text>
+    <g font-size="15" fill="#164e63">
+      <text x="64" y="150">• role &amp; experience</text>
+      <text x="64" y="180">• where you come from</text>
+      <text x="80" y="200" font-size="13" fill="#0e7490">Databricks · .NET · BI …</text>
+      <text x="64" y="232">• workloads you use</text>
+      <text x="64" y="262">• what you already know</text>
+      <text x="64" y="292">• what you want to learn</text>
+      <text x="64" y="322">• learning log</text>
+      <text x="80" y="342" font-size="13" fill="#0e7490">sessions · catch-ups</text>
+    </g>
+    <rect x="64" y="380" width="192" height="70" rx="10" fill="#cffafe"/>
+    <text x="160" y="410" text-anchor="middle" font-size="15" font-weight="600" fill="#0e7490">fabric-onboard</text>
+    <text x="160" y="432" text-anchor="middle" font-size="13" fill="#155e75">fabric-progress</text>
+
+    <!-- arrow -->
+    <path d="M286 260 L 338 260" stroke="#0e7490" stroke-width="3" marker-end="url(#a)"/>
+    <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#334155"/></marker></defs>
+
+    <!-- pipeline -->
+    <text x="760" y="70" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">fabric-learn  ·  fabric-catchup</text>
+    <g>
+      <rect x="350" y="100" width="180" height="120" rx="12" fill="#fff" stroke="#94a3b8"/>
+      <text x="440" y="135" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">1 · Plan</text>
+      <text x="440" y="162" text-anchor="middle" font-size="13" fill="#475569">question type or</text>
+      <text x="440" y="180" text-anchor="middle" font-size="13" fill="#475569">catch-up scope,</text>
+      <text x="440" y="198" text-anchor="middle" font-size="13" fill="#475569">window, sources</text>
+
+      <rect x="560" y="100" width="190" height="120" rx="12" fill="#fff" stroke="#94a3b8"/>
+      <text x="655" y="135" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">2 · Gather</text>
+      <text x="655" y="162" text-anchor="middle" font-size="13" fill="#475569">all sources at once</text>
+      <text x="655" y="180" text-anchor="middle" font-size="13" fill="#475569">(gather.py + parallel</text>
+      <text x="655" y="198" text-anchor="middle" font-size="13" fill="#475569">web calls)</text>
+
+      <rect x="780" y="100" width="180" height="120" rx="12" fill="#fff" stroke="#94a3b8"/>
+      <text x="870" y="135" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">3 · Verify</text>
+      <text x="870" y="162" text-anchor="middle" font-size="13" fill="#475569">drop uncited claims,</text>
+      <text x="870" y="180" text-anchor="middle" font-size="13" fill="#475569">spot-check key facts,</text>
+      <text x="870" y="198" text-anchor="middle" font-size="13" fill="#475569">flag stale · show conflicts</text>
+
+      <rect x="990" y="100" width="170" height="120" rx="12" fill="#fff" stroke="#94a3b8"/>
+      <text x="1075" y="135" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">4 · Answer</text>
+      <text x="1075" y="162" text-anchor="middle" font-size="13" fill="#475569">pitched at your level,</text>
+      <text x="1075" y="180" text-anchor="middle" font-size="13" fill="#475569">cited [1][2][3],</text>
+      <text x="1075" y="198" text-anchor="middle" font-size="13" fill="#475569">logged to profile</text>
+      <path d="M532 160 L 556 160" stroke="#334155" stroke-width="2" marker-end="url(#a)"/>
+      <path d="M752 160 L 776 160" stroke="#334155" stroke-width="2" marker-end="url(#a)"/>
+      <path d="M962 160 L 986 160" stroke="#334155" stroke-width="2" marker-end="url(#a)"/>
+    </g>
+    <!-- sources -->
+    <g font-size="14">
+      <rect x="350" y="260" width="250" height="210" rx="12" fill="#eff6ff" stroke="#2563eb"/>
+      <text x="475" y="290" text-anchor="middle" font-weight="700" fill="#1d4ed8">Official</text>
+      <text x="370" y="322" fill="#1e3a8a">Fabric Updates blog</text>
+      <text x="370" y="348" fill="#1e3a8a">Microsoft Learn docs</text>
+      <text x="370" y="374" fill="#1e3a8a">DP-600 / DP-700 training</text>
+      <text x="370" y="400" fill="#1e3a8a">Fabric roadmap</text>
+      <text x="370" y="440" fill="#2563eb" font-size="12">confirms what changed</text>
+
+      <rect x="630" y="260" width="250" height="210" rx="12" fill="#fffbeb" stroke="#d97706"/>
+      <text x="755" y="290" text-anchor="middle" font-weight="700" fill="#b45309">Tools &amp; packages</text>
+      <text x="650" y="322" fill="#78350f">GitHub (open discovery)</text>
+      <text x="650" y="348" fill="#78350f">fabricstack.dev catalogue</text>
+      <text x="650" y="374" fill="#78350f">releases &amp; changelogs</text>
+      <text x="650" y="400" fill="#78350f">new launches lane</text>
+      <text x="650" y="440" fill="#d97706" font-size="12">what people built</text>
+
+      <rect x="910" y="260" width="250" height="210" rx="12" fill="#fdf2f8" stroke="#db2777"/>
+      <text x="1035" y="290" text-anchor="middle" font-weight="700" fill="#be185d">Community</text>
+      <text x="930" y="322" fill="#831843">r/MicrosoftFabric</text>
+      <text x="930" y="348" fill="#831843">Fabric Community forum</text>
+      <text x="930" y="374" fill="#831843">Fabric Ideas (votes)</text>
+      <text x="930" y="400" fill="#831843">YouTube transcripts · blogs</text>
+      <text x="930" y="440" fill="#db2777" font-size="12">how it works in practice</text>
+    </g>
+    <path d="M655 222 L 655 256" stroke="#334155" stroke-width="2" stroke-dasharray="5 4"/>
+  </g>
+</svg>

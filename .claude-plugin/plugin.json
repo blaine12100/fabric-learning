@@ -1,0 +1,10 @@
+{
+  "name": "fabric-learning",
+  "version": "0.1.0",
+  "description": "Learn and keep up with Microsoft Fabric from cited official and community sources: personalised onboarding, deep-dive explanations, ecosystem catch-ups and progress tracking. Unofficial; learning only.",
+  "author": { "name": "blaine12100" },
+  "repository": "https://github.com/blaine12100/fabric-learning",
+  "homepage": "https://github.com/blaine12100/fabric-learning",
+  "license": "MIT",
+  "keywords": ["microsoft-fabric", "fabric", "learning", "power-bi", "onelake", "news", "research", "citations"]
+}
