@@ -9,7 +9,8 @@ Heuristic: a sentence needs a citation unless it is
   - a heading, a table header/separator, or inside the Sources list or a code block,
   - a question to the user or a suggested prompt (ends with "?", or is in quotes),
   - explicitly marked framing: starts with "Framing:" / "Analogy:" or contains "(no source)" / "unverified",
-  - a short label line (< 5 words) or bold-only heading, e.g. "Also new", "**Options**",
+  - a short label line (< 5 words, or up to 6 words with no closing punctuation, or ending in ":"),
+    or a bold-only heading, e.g. "Also new", "**Options**", "Tools & packages",
   - the assistant describing its own process ("I'll check…", "Let me…", "Here's…"),
   - about the user, from their profile ("You already know…", "Coming from Databricks…"),
   - an italic-only metadata line ("*Date: … · Sources checked …*").
@@ -22,10 +23,10 @@ import json
 import re
 import sys
 
-CITE = re.compile(r"\[\d+[a-z]?\]")
+CITE = re.compile(r"\[\d+[a-z]?(?:\s*,\s*\d+[a-z]?)*\]")  # [1], [1a], and [1, 3] (the contract is [1][3])
 EXEMPT_START = ("framing:", "analogy:", "note:", "tip:", "sources", "not covered", "+", "—", "say ", "ask ",
                 # coverage notes and advice to the user, not claims about Fabric
-                "thin evidence", "gaps:", "coverage", "no 🔥", "about ", "watch for", "check ", "verify ", "try ", "remember ")
+                "thin evidence", "gaps:", "coverage:", "no 🔥", "watch for", "check ", "verify ", "try ", "remember ")
 EXEMPT_ANY = ("(no source)", "unverified", "i couldn't find a source", "couldn't find a source",
               "rate-limited", "was unavailable", "not read directly")
 
@@ -55,11 +56,13 @@ def main():
             continue
         if in_code or not line:
             continue
-        if re.match(r"^#*\s*\**sources\**\s*:?\s*$", line, re.I):
+        if re.match(r"^#*\s*\**\s*sources\s*:?\s*\**\s*:?\s*$", line, re.I):  # Sources, ## Sources:, **Sources:**
             in_sources = True
             continue
+        if in_sources and line.startswith("#"):
+            in_sources = False  # a heading after the list starts normal text again
         if in_sources:
-            m = re.match(r"^\[(\d+[a-z]?)\]", line)
+            m = re.match(r"^[-*]?\s*\[?(\d+[a-z]?)[\].)]", line)  # [1] …, 1. …, - [1] …
             if m:
                 listed.add(m.group(1))
             continue
@@ -69,10 +72,11 @@ def main():
         if line.startswith("#"):
             continue
         # bold-only heading lines and digest header lines are labels, not claims
-        if re.match(r"^\*[^*].*\*$", line) or re.match(r"^\*\*[^*]+\*\*:?$", line) or re.match(r"^(fabric catch-up|window|scope)\b", line, re.I):
+        # italic-only (*…*, no other asterisks) or bold-only lines; a "* " bullet is neither
+        if re.match(r"^\*[^*\s][^*]*\*$", line) or re.match(r"^\*\*[^*]+\*\*:?$", line) or re.match(r"^(fabric catch-up|window|scope)\b", line, re.I):
             continue
         for c in CITE.findall(line):
-            cited_nums.add(c.strip("[]"))
+            cited_nums.update(x.strip() for x in c.strip("[]").split(","))
         body = re.sub(r"^[\s>*\-•\d.)|]+", "", line).strip()
         sents = sentences(body)
         for i, s in enumerate(sents):
@@ -82,7 +86,7 @@ def main():
             if CITE.search(s) or CITE.search(nxt) or len(s.split()) < 5:
                 continue
             # titles and section labels: no sentence punctuation and short, or decorated headers
-            if (not re.search(r"[.!?]$", s) and len(s.split()) <= 12) or s[:1] in "★↻☐✔◐":
+            if (not re.search(r"[.!?]$", s) and (len(s.split()) <= 6 or s.endswith(":"))) or s[:1] in "★↻☐✔◐":
                 continue
             if s.endswith("?") or (s[:1] in "\"'“" and s.rstrip()[-1:] in "\"'”"):
                 continue
@@ -94,9 +98,10 @@ def main():
             uncited.append({"line": n, "text": s[:200]})
     out = {
         "uncited": uncited,
-        "missing_sources": sorted(cited_nums - listed) if listed else [],
+        # with no Sources list at all, every cited number is missing
+        "missing_sources": sorted(cited_nums - listed),
         "unused_sources": sorted(listed - cited_nums),
-        "ok": not uncited and not (listed and (cited_nums - listed)),
+        "ok": not uncited and not (cited_nums - listed),
     }
     print(json.dumps(out, indent=2, ensure_ascii=False))
     return 0 if out["ok"] else 1

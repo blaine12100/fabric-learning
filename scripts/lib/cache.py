@@ -1,5 +1,6 @@
 """Namespaced on-disk cache. Keys are hashed, so any string (a URL, a command line) works as a key."""
 import hashlib
+import os
 import time
 from pathlib import Path
 from typing import Optional
@@ -24,4 +25,7 @@ class DiskCache:
     def put(self, key: str, data: bytes) -> None:
         p = self._path(key)
         p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_bytes(data)
+        # write then rename: gather.py runs scripts in parallel, and a reader must never see half a file
+        tmp = p.with_name(f"{p.name}.{os.getpid()}.tmp")
+        tmp.write_bytes(data)
+        os.replace(tmp, p)

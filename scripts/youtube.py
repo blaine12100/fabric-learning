@@ -28,7 +28,11 @@ FALLBACK = "web search with site:youtube.com"
 
 def run_json(args, ttl=3600):
     """yt-dlp -J, cached like every other source call. Raises CommandError."""
-    return json.loads(run_cached([tools.ensure("yt-dlp"), "--no-warnings", "-J", *args], ttl=ttl, timeout=180))
+    out = run_cached([tools.ensure("yt-dlp"), "--no-warnings", "-J", *args], ttl=ttl, timeout=180)
+    try:
+        return json.loads(out)
+    except ValueError:
+        raise CommandError("yt-dlp returned no JSON (blocked, or the video is unavailable)")
 
 
 def mmss(sec):

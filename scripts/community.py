@@ -27,7 +27,7 @@ FALLBACK = "web search with site:community.fabric.microsoft.com"
 BASE = "https://community.fabric.microsoft.com/t5/s/rss"
 BOARD_FEED = f"{BASE}/board?board.id=fbc_fabricupdatesblogs"
 BOARDS = {"blog": "blog-board:fbc_fabricupdatesblogs", "ideas": "idea-board:fbc_ideas"}
-NOT_FORUM = ("Fabric-Updates-Blog", "Fabric-Ideas")
+NOT_FORUM = ("Fabric-Updates-Blog", "Power-BI-Updates-Blog", "Fabric-Ideas")
 PRODUCT_BOARDS = {"powerbi": ("Power-BI-Updates-Blog",), "any": ("Power-BI-Updates-Blog", "Fabric-Updates-Blog")}
 
 
@@ -80,8 +80,17 @@ def finish(a, source, results, query_url, keep_board=None):
         results = [r for r in results if keep_board(r["board"])]
     if a.grep:
         results = [r for r in results if r["text"]]
-    results = [r for r in dedupe_reposts(results) if in_window(r["published"], a.since, a.until)]
-    cli.emit_results(source, results, limit=a.limit, query_url=query_url)
+    fetched = dedupe_reposts(results)
+    results = [r for r in fetched if in_window(r["published"], a.since, a.until)]
+    meta = {"query_url": query_url}
+    if len(results) < len(fetched):
+        meta["outside_window"] = len(fetched) - len(results)
+        if not results:
+            # RSS can't page, so an older window is often out of reach; say so rather than return a silent zero
+            meta["note"] = ("All results fell outside the window: RSS only reaches the ~20 newest or most relevant "
+                            "posts. For older windows, use a web search with site:community.fabric.microsoft.com "
+                            "plus the key words and the month.")
+    cli.emit_results(source, results, limit=a.limit, **meta)
 
 
 def cmd_blog(a):
@@ -93,6 +102,7 @@ def cmd_blog(a):
                 search_url(f"{q} updates blog")]
         results = sorted(fetch(urls, a), key=lambda r: r["published"] or "", reverse=True)
         finish(a, "fabric-blog", results, urls[-1], keep_board=lambda b: b in PRODUCT_BOARDS[a.product])
+        return
     # without a query: the board feed, newest first; with one, relevance finds exact titles
     url = search_url(a.query, "blog") if a.query else BOARD_FEED
     finish(a, "fabric-blog", fetch([url], a), url)

@@ -301,7 +301,7 @@ description: >-
 
 ## Learning log
 
-- After answering, append one entry. It records **what was covered, not what the user knows**:
+- After answering, append one entry, **even with no profile or an invalid one** (the log doesn't depend on the profile). It records **what was covered, not what the user knows**:
 
 ```bash
 python3 <skill-base-dir>/../../scripts/profile.py append < entry.json

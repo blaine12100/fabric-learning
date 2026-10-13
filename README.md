@@ -54,8 +54,13 @@ Claude picks the right skill from what you type. You don't need to remember comm
 **Requirements**
 - [Claude Code](https://claude.com/claude-code): CLI, desktop app or IDE extension.
 - Python 3.9+. The scripts use only the standard library. On Windows, Claude uses `python` or `py` if `python3` isn't on your PATH.
-- [GitHub CLI](https://cli.github.com) (`gh`), logged in, for the GitHub source. Recommended; without it, GitHub falls back to web search.
 - Internet access. `yt-dlp` (for YouTube transcripts) installs itself on first use into a private virtual environment, so nothing system-wide.
+
+**Optional (recommended)**
+- [GitHub CLI](https://cli.github.com) (`gh`), logged in with `gh auth login`. It powers the GitHub source: finding newly launched Fabric tools, release notes for established ones, tool search and issue workarounds.
+  - **Without it**, the GitHub source falls back to web search. You still get repos that search engines have indexed, but you lose star counts, creation dates and release notes, and brand-new tools are easy to miss.
+  - **Why not anonymous access?** Without signing in, GitHub allows only 10 searches a minute and 60 other API requests an hour. These limits are set by GitHub, and the plugin can't get around them. Signing in raises them to 30 searches a minute and 5,000 requests an hour.
+  - **Catch-ups are where this matters most.** Each month of a catch-up runs about 14 GitHub searches plus up to 40 release checks. A three-month catch-up comes to roughly 40 searches and over 100 release checks, so without signing in it would run out within the first month.
 
 **In Claude Code:**
 
@@ -200,6 +205,7 @@ Everything lives in plain files on your machine:
 
 - **It researches live, so it isn't instant.** A deep question or a big catch-up can take a few minutes and a fair number of tokens. Simple questions stay light; heavy reading is handed to at most two sub-agents at a time, and only when it's worth it (see [How research runs](#how-research-runs-and-why-sub-agents-are-capped-at-two)).
 - **Some sites resist automation.** The Fabric Community site blocks page fetches, so the plugin uses its public RSS feeds instead. Those carry full post text, but no kudos or vote counts. Reddit's RSS is rate-limited, so community reaction is sometimes thin, and the digest says so when it is.
+- **Older community posts are harder to reach.** RSS feeds only return the newest or most relevant ~20–25 posts, with no paging. For a catch-up over a past month, forum, Ideas and Reddit coverage leans on web search and can be thinner than for the last few weeks.
 - **It can still be wrong.** Citations make mistakes *checkable*, not impossible. Click through before you act, especially on preview features.
 
 ---
@@ -231,6 +237,7 @@ scripts/
   lib/                 shared library: cache, HTTP, feeds (RSS/Atom), dates, text, CLI runner, tool installs
 tests/                 offline unit tests (python3 -m unittest discover tests)
 assets/                README images
+docs/                  proposed features and design proposals (not used at runtime)
 ```
 
 ## Contributing
@@ -252,7 +259,7 @@ Source scripts are thin adapters over `scripts/lib/`, so a new source is usually
 4. Add a row to the source table in `references/sourcing-rules.md` (what it's for, how it's accessed, its authority).
 5. Add tests for any parsing in `tests/`, and run `python3 -m unittest discover tests`.
 
-Scripts use only the Python standard library (3.7+) so it's plug and play.
+Scripts use only the Python standard library (3.9+) so it's plug and play.
 
 ## Acknowledgements
 

@@ -105,7 +105,7 @@ profile.py reset [--dry-run]
 - One screen. Leave out empty sections:
 
 ```
-Your Fabric learning — since <the earliest of profile.created_at, learn.first_ts and the first catch-up's ts>
+Your Fabric learning — since <the earliest of profile.created_at, learn.first_ts and catchup.first_ts>
 
 Profile      <role> · <experience> · <workloads> · depth: <depth>
 Coming from  <background fields / platforms / stack>

@@ -43,14 +43,14 @@ profile.py reset [--dry-run]         # delete profile, log and cache
 profile.py paths
 ```
 
-- **Exit codes for every command:** 0 OK, 1 nothing there (no profile), 2 invalid input or state (message on stderr names the field).
+- **Exit codes for every command:** 0 OK, 1 nothing there (no profile), 2 invalid input or state (message on stderr names the field), 4 unexpected error (message on stderr). Exit 4 is not "no profile": don't onboard over it, report the error and continue unpersonalised.
 - **Profile states every skill must handle:**
   - **Exit 1 (no profile):** offer `fabric-onboard`.
   - **Exit 2 (invalid profile, e.g. hand-edited):**
     - Don't onboard over it, and don't write over it.
     - Continue unpersonalised.
     - Tell the user in one line that `fabric-progress` can fix it.
-- `forget --topic` matches **whole topics** (ignoring case, spacing and punctuation). `--contains` switches to substring matching, so offer it only after showing a dry run.
+- `forget --topic` matches **whole topics** (ignoring case, spacing and punctuation). `--contains` matches the topic's words anywhere in a topic or item title (whole words, so "AI" doesn't match "domains"). Offer it only after showing a dry run.
   - Learn entries that match are deleted.
   - In catch-up entries, only the matching **items** are removed. The entry and its window stay, so "since last time" keeps working.
   - `forget --before` deletes whole entries, catch-ups included.
@@ -149,7 +149,7 @@ profile.py paths
                            "related_topics": [ { "topic": "…", "url": "…" } ] } ],
   "related_suggestions": [ { "topic": "…", "url": "…", "from_topic": "…", "from_ts": "…" } ],
   "learn":   { "sessions": 0, "first_ts": null, "last_ts": null },
-  "catchup": { "count": 0, "last": { "ts": "…", "label": "…", "window": {} }, "items_shown": 0,
+  "catchup": { "count": 0, "first_ts": null, "last": { "ts": "…", "label": "…", "window": {} }, "items_shown": 0,
                "open_gaps": [ { "from": "…", "to": "…" } ],
                "items_matching_interests": [ { "title": "…", "url": "…", "status": "…", "shown_on": "…", "interests": ["…"] } ] },
   "log_issues": { "malformed_lines": 0 }

@@ -80,6 +80,7 @@
 - **Community site access (fabric-blog, community-forum, fabric-ideas):**
   - The site's web pages block automated fetching (HTTP 403, checked 2026-10-10), but its **RSS endpoints are open and carry full post text**. `scripts/community.py` uses them.
   - RSS search returns at most ~20 results and ANDs the words. Use **2–4 key words**, not a sentence, and run 2–3 variants rather than one long query.
+  - RSS can't page, so forum and Ideas posts from an **older window** (more than a few weeks back) are often out of reach. When a windowed call returns `outside_window` with no results, follow its `note`: a web search with the key words and the month.
   - `community.py` returns a 4,000-character excerpt per post by default. **Monthly feature summaries and event round-ups are 20k–300k characters**, so for those use `--grep <term>` (only the paragraphs mentioning the term) or `--full`. Always read the anchor post in full, or grepped, before citing a specific fact from it.
   - The **Power BI Updates blog** is a separate board. Use `community.py blog --product powerbi` (or `any`).
   - **Dates of re-hosted posts:** older blog posts migrated to the Community site can carry the migration date as their RSS date. If the post body or title shows an earlier date (e.g. "May 2024 Feature Summary"), use that date for freshness and note "re-hosted".
@@ -96,7 +97,7 @@
     - **Long-awaited features:** a newly shipped feature that matches a highly voted idea. The vote count and the idea's age show how long people waited.
     - **"Can Fabric do X?" when the answer is no:** an idea for X shows whether it's been requested and how Microsoft has responded. Point the user to it so they can vote.
 - **reddit access:**
-  - Reddit's JSON API blocks unauthenticated requests. Its RSS feeds work but are rate-limited; `scripts/reddit.py` caches for 30 minutes and backs off on HTTP 429.
+  - Reddit's JSON API blocks unauthenticated requests. Its RSS feeds work but are rate-limited; `scripts/reddit.py` caches for 3 hours and backs off on HTTP 429.
   - RSS gives titles, text, authors, dates and comment threads, but **no upvote counts**. Use comment count as the engagement signal. When search results show scores, use those.
   - If the script is rate-limited out, fall back to web search. Put "reddit r/MicrosoftFabric" plus 2–4 key words in the **query text**, not in a domain filter (domain filters on reddit.com can be rejected). Try two phrasings.
   - If that finds nothing too, say so in the output ("community reaction unavailable") rather than leaving the gap silent.

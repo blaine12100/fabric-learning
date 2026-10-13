@@ -58,12 +58,12 @@ description: >-
   - Build the unpersonalised digest.
   - Say in one line that `fabric-progress` can fix it.
 - Run `profile.py catchup-state` to get:
-  - `since_last_time_from`: where "since last time" starts: the latest window end among **general** catch-ups (`since-last-time` and unfiltered `period`). Event and topic-news digests cover only a slice of the news, so they don't move it.
+  - `since_last_time_from`: where "since last time" starts: the latest window end among **general** catch-ups (`since-last-time` and `period`, with no topic filter). Event digests and any topic-filtered digest cover only a slice of the news, so they don't move it.
   - `shown`: **every** item URL shown in any previous catch-up, with its status then, so nothing repeats (see [Catch-up log](#catch-up-log)).
 
 ### 2. Work out the scope
 
-- Pick the **one** scope that fits:
+- Pick the **one** time scope that fits. A topic filter is a separate decision (see [Topic filter](#topic-filter) below):
 
 | Scope | Example | Window |
 |---|---|---|
@@ -81,7 +81,11 @@ description: >-
 | **Community** | reddit, youtube, community-forum, web | *How people react and use it*, plus community practices and tools the official channels never mention |
 | **Demand** | fabric-ideas | *How long people wanted it*: links released features to the feature requests behind them. See [Demand signals](#demand-signals) |
 
-- **Scopes can combine.** For example, "what's new for Power BI since FabCon" is Event + Topic: use the event's end as the window start and filter by topic.
+- <a id="topic-filter"></a>**Topic filter.** Whenever the user names a workload, item or feature (Lakehouse, Power BI, Real-Time Intelligence, Direct Lake…), set it as the topic filter, whatever the time scope. Research and show only that topic, and log it (see [Catch-up log](#catch-up-log)). "Catch me up" or "what's new in Fabric?" has no topic filter.
+- **Scopes can combine with a topic:**
+  - Event + topic: "what's new for Power BI since FabCon": the event's end is the window start, filtered to Power BI.
+  - Period + topic: "what changed for lakehouses in September?": Period scope, window 1–30 Sep, filtered to Lakehouse.
+  - A topic with no time ("anything new in Real-Time Intelligence lately?") is Topic news scope, last 90 days.
 - **Event scope: confirm the event first.**
   - Find the event's official name and dates from a source: Microsoft's event page or a Fabric blog post. Use these for the window, and cite them in the digest header.
   - If the name is ambiguous (e.g. "FabCon" with several editions), pick the most recent past edition and say so in the header.
@@ -243,7 +247,7 @@ description: >-
 - **Layout:**
 
 ```
-Fabric catch-up — <scope>, <date range>
+Fabric catch-up — <scope>[, <topic>], <date range>
 <one line: what the window covered, e.g. "FabCon Europe 2026, Barcelona, 28 Sep – 1 Oct [1]">
 
 ★ For you
@@ -306,7 +310,7 @@ Sources
 
 ## Catch-up log
 
-- After showing the digest, append one entry to the learning log. This is what makes "since last time" and de-duplication work:
+- After showing the digest, append one entry to the learning log. This is what makes "since last time" and de-duplication work. Log it **even with no profile or an invalid one**: the log doesn't depend on the profile.
 
 ```bash
 python3 <skill-base-dir>/../../scripts/profile.py append < entry.json
@@ -327,7 +331,8 @@ python3 <skill-base-dir>/../../scripts/profile.py append < entry.json
 }
 ```
 
-- `scope`: `since-last-time` · `period` · `event` · `topic-news`. `topic`: the topic filter for `topic-news` (and filtered periods), otherwise null.
+- `scope`: `since-last-time` · `period` · `event` · `topic-news`.
+- `topic`: **required whenever the digest was filtered to a topic, whatever the scope**, e.g. `"scope": "period", "topic": "Lakehouse"` for "what changed for lakehouses in September?". `null` only for an unfiltered digest. A topic digest logged with `topic: null` counts as a general catch-up, so the next "catch me up" would skip all the other news in that window.
 - `coverage`: `full` · `highlights` · `month-by-month` · `last-<n>-days`.
 - `uncovered`: only when the user chose a shorter range than the gap. It lets a later request ("show me what I missed in the summer") pick it up.
 - Log **only the items shown**, not everything found. Items cut by the cap can still appear next time.

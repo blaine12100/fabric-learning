@@ -1,4 +1,4 @@
-"""Shared building blocks for the fabric-learning source scripts. Standard library only (Python 3.7+).
+"""Shared building blocks for the fabric-learning source scripts. Standard library only (Python 3.9+).
 
 Layers, lowest first:
   config    where data and cache live (env overrides)

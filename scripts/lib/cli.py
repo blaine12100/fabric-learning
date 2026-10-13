@@ -10,6 +10,8 @@ from .errors import SourceUnavailable
 
 
 def emit(obj, code: int = 0):
+    if hasattr(sys.stdout, "reconfigure"):  # Windows pipes default to cp1252; titles can be any language
+        sys.stdout.reconfigure(encoding="utf-8")
     print(json.dumps(obj, indent=2, ensure_ascii=False))
     sys.exit(code)
 

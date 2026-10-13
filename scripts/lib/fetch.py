@@ -1,4 +1,5 @@
 """HTTP: cached GET with retries, JSON fetch, and a cross-process rate limiter."""
+import http.client
 import json
 import time
 import urllib.error
@@ -38,17 +39,26 @@ def http_get(url: str, ttl: int = 3600, retries: int = 4, accept: str = "*/*", l
             return body
         except urllib.error.HTTPError as e:
             if e.code in RETRY_STATUS and attempt < retries:
-                time.sleep(min(int(e.headers.get("Retry-After") or delay), 30))
+                time.sleep(min(_retry_after(e.headers.get("Retry-After"), delay), 30))
                 delay *= 2
                 continue
             raise SourceUnavailable(f"HTTP {e.code} for {url}")
-        except (urllib.error.URLError, TimeoutError) as e:
+        # URLError and timeouts are OSErrors (socket.timeout on 3.9); dropped connections raise HTTPException
+        except (OSError, http.client.HTTPException) as e:
             if attempt < retries:
                 time.sleep(delay)
                 delay *= 2
                 continue
             raise SourceUnavailable(f"{e} for {url}")
     raise SourceUnavailable(f"gave up on {url}")
+
+
+def _retry_after(value, default: int) -> int:
+    """Retry-After is either seconds or an HTTP date; anything unreadable falls back to our own backoff."""
+    try:
+        return max(int(value), 0)
+    except (TypeError, ValueError):
+        return default
 
 
 def _read(req) -> bytes:

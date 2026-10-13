@@ -12,6 +12,7 @@ Allowed scripts: the source scripts registered in lib.SOURCES.
 Output: {"<id>": {"ok": true, "result": {...}} | {"ok": false, "error": "...", "fallback": "..."}}
 """
 import json
+import os
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
@@ -24,17 +25,26 @@ from lib import SOURCES  # noqa: E402
 ALLOWED = set(SOURCES)
 
 
+# children print UTF-8 whatever the platform's default encoding (cp1252 on Windows)
+CHILD_ENV = {**os.environ, "PYTHONIOENCODING": "utf-8"}
+
+
 def run(step):
-    sid, script = step.get("id"), step.get("script")
+    sid, script = step["id"], step.get("script")
     if script not in ALLOWED:
         return sid, {"ok": False, "error": f"script not allowed: {script}"}
-    args = [str(a) for a in step.get("args", [])]
+    args = step.get("args", [])
+    if not isinstance(args, list):
+        return sid, {"ok": False, "error": "args must be a list of strings"}
     try:
-        r = subprocess.run([sys.executable, str(HERE / script), *args], capture_output=True, text=True, timeout=300)
+        r = subprocess.run([sys.executable, str(HERE / script), *map(str, args)], capture_output=True, text=True,
+                           encoding="utf-8", errors="replace", env=CHILD_ENV, timeout=300)
     except subprocess.TimeoutExpired:
         return sid, {"ok": False, "error": "timed out after 300s", "fallback": "web search"}
     try:
         out = json.loads(r.stdout)
+        if not isinstance(out, dict):
+            raise ValueError
     except ValueError:
         return sid, {"ok": False, "error": (r.stderr or r.stdout).strip()[-400:] or f"exit {r.returncode}"}
     if r.returncode == 0:
@@ -43,9 +53,13 @@ def run(step):
 
 
 def main():
-    plan = json.load(sys.stdin)
-    if not isinstance(plan, list) or not plan:
-        print(json.dumps({"error": "plan must be a non-empty JSON list"}))
+    try:
+        plan = json.loads(sys.stdin.read())
+    except ValueError as e:
+        print(json.dumps({"error": f"plan is not valid JSON: {e}"}))
+        return 2
+    if not isinstance(plan, list) or not plan or not all(isinstance(s, dict) for s in plan):
+        print(json.dumps({"error": "plan must be a non-empty JSON list of step objects"}))
         return 2
     ids = [s.get("id") for s in plan]
     if None in ids or len(set(ids)) != len(ids):

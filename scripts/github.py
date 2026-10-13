@@ -21,6 +21,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from lib import cli  # noqa: E402
 from lib.commands import run_cached  # noqa: E402
+from lib.errors import CommandError  # noqa: E402
 from lib.dates import days_between, in_window, iso_date, today  # noqa: E402
 from lib.text import clip  # noqa: E402
 
@@ -49,6 +50,22 @@ def slim(r):
             "microsoft_org": r["fullName"].lower().split("/")[0] in ("microsoft", "microsoftdocs", "azure", "azure-samples")}
 
 
+def search_terms(terms, extra, failed):
+    """search_repos for each term; one failing term (e.g. a secondary rate limit) is noted, not fatal.
+    Raises only if every term fails, so the caller falls back as a whole."""
+    def one(t):
+        try:
+            return search_repos(t, extra, 30)
+        except CommandError as e:
+            failed.append({"term": t, "error": str(e)[-200:]})
+            return []
+    with ThreadPoolExecutor(3) as ex:
+        batches = list(ex.map(one, terms))
+    if terms and len(failed) == len(terms):
+        raise CommandError(failed[0]["error"])
+    return batches
+
+
 def releases_in_window(repo, since, until):
     out = gh(["api", f"repos/{repo}/releases?per_page=10"], ok_empty=True)
     rel = []
@@ -64,9 +81,9 @@ def cmd_discover(a):
     until = a.until or today()
     terms = TERMS + list(a.extra or [])
     # Search API allows ~30 requests/minute; keep concurrency low and lean on the cache.
-    with ThreadPoolExecutor(3) as ex:
-        created = list(ex.map(lambda t: search_repos(t, [f"--created={a.since}..{until}"], 30), terms))
-        pushed = list(ex.map(lambda t: search_repos(t, [f"--updated={a.since}..{until}"], 30), terms))
+    failed = []
+    created = search_terms(terms, [f"--created={a.since}..{until}"], failed)
+    pushed = search_terms(terms, [f"--updated={a.since}..{until}"], failed)
     seen, new = set(), []
     for r in (x for batch in created for x in batch):
         if r["fullName"] in seen or r.get("isArchived") or not is_ms_fabric(r):
@@ -89,6 +106,7 @@ def cmd_discover(a):
         rels = list(ex.map(lambda s: releases_in_window(s["repo"], a.since, until), established))
     updates = [dict(s, releases=r) for s, r in zip(established, rels) if r]
     cli.emit({"source": "github", "window": {"from": a.since, "to": until}, "search_terms": terms,
+              **({"failed_searches": failed} if failed else {}),
           "new_launches": new[: a.limit], "updates": updates[: a.limit],
           "note": "Repos pushed in the window without a release are omitted (commits alone are noise). "
                   "Check GitHub URLs mentioned by other sources separately with `repo`."})

@@ -26,7 +26,8 @@ def run_cached(argv: List[str], ttl: int = 3600, timeout: int = 180,
     err = ""
     for attempt in range(2):
         try:
-            r = subprocess.run(argv, capture_output=True, text=True, timeout=timeout)
+            r = subprocess.run(argv, capture_output=True, text=True, encoding="utf-8", errors="replace",
+                               timeout=timeout)
         except subprocess.TimeoutExpired:
             err = f"timed out after {timeout}s"
             break
