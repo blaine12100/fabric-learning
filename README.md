@@ -319,7 +319,7 @@ Scripts use only the Python standard library (3.9+) so it's plug and play.
 
 ## About the author
 
-I'm Dhruv Marwha, a software engineer turned data engineer, with 5+ years in software engineering and 2+ in data. I built fabric-learning to get hands-on with agent development, and because Fabric changes so fast that keeping up with it became a job in itself.
+I'm Dhruv Marwha, a software engineer turned data engineer, with 5+ years in software engineering and 2+ in data engineering and related fields. I built fabric-learning to get hands-on with agent development, and because Fabric changes so fast that keeping up with it became a job in itself.
 
 [Connect with me on LinkedIn](https://www.linkedin.com/in/dhruv-marwha/)
 
