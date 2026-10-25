@@ -1,6 +1,6 @@
 # Plan: GitHub Copilot support for fabric-learning
 
-> **Status: proposed, on hold (2026-10-13).** The plan was approved, then paused after step 0. The findings from that spike are below, along with the decisions still open. Everything after that section is the plan as it was approved.
+> **Status: implemented (2026-10-25).** Copilot CLI 1.0.103 passed the pre-written acceptance suite (20 of 21; the one failure is a test flaw that fed tool logs to the citation checker, and the answer text itself passes). VS Code was tested by hand. Remaining: Claude Code regression run, and the `fabric-researcher` worker script-access issue seen in VS Code (mitigated in sourcing-rules.md, not root-caused).
 
 ## Step 0 findings (Copilot CLI 1.0.97, tested 2026-10-13)
 

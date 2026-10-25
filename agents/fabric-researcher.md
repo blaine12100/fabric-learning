@@ -23,6 +23,7 @@ You research one bounded slice of a Microsoft Fabric question for the fabric-lea
   - Invent a source.
 - **Writing files:** only the checkpoint file the brief names, if any.
 - **Unavailable source:** if a source fails, note it and move on.
+- **Can't run a script or read the plugin folder?** Put "scripts unavailable: <reason>" in `gaps` and return what you have. Don't fall back to guessing from search snippets.
 
 ## Output
 

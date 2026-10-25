@@ -4,6 +4,7 @@
 
 <p align="center">
   <a href="#install"><img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-0e7490"></a>
+  <a href="#install"><img alt="GitHub Copilot plugin" src="https://img.shields.io/badge/GitHub%20Copilot-plugin-24292f"></a>
   <img alt="Unofficial" src="https://img.shields.io/badge/Microsoft%20Fabric-unofficial%20community%20project-d97706">
   <img alt="Learning only" src="https://img.shields.io/badge/mode-learning%20only-16a34a">
   <a href="LICENSE"><img alt="MIT licence" src="https://img.shields.io/badge/licence-MIT-64748b"></a>
@@ -52,7 +53,7 @@ Claude picks the right skill from what you type. You don't need to remember comm
 ## Install
 
 **Requirements**
-- [Claude Code](https://claude.com/claude-code): CLI, desktop app or IDE extension.
+- [Claude Code](https://claude.com/claude-code) (CLI, desktop app or IDE extension), **or** GitHub Copilot: [Copilot CLI](https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli) or VS Code with agent plugins enabled (`chat.plugins.enabled`).
 - Python 3.9+. The scripts use only the standard library. On Windows, Claude uses `python` or `py` if `python3` isn't on your PATH.
 - Internet access. `yt-dlp` (for YouTube transcripts) installs itself on first use into a private virtual environment, so nothing system-wide.
 
@@ -83,6 +84,34 @@ git clone https://github.com/blaine12100/fabric-learning.git
 ```
 </details>
 
+**In GitHub Copilot CLI:**
+
+```bash
+copilot plugin marketplace add blaine12100/fabric-learning
+copilot plugin install fabric-learning@fabric-learning
+```
+
+Restart the session. Local clone: `copilot plugin marketplace add ./fabric-learning`.
+
+**In VS Code (GitHub Copilot):** open the Extensions view, search `@agentPlugins`, or run **Chat: Install Plugin From Source** with `https://github.com/blaine12100/fabric-learning`. For a local clone, add its folder to the `chat.pluginLocations` setting. Plugins installed through Copilot CLI are picked up too.
+
+**Using it in Copilot:** the skills load automatically from what you ask, same as in Claude Code. The `/fabric-learning:…` slash commands above are Claude Code's form; in Copilot, run `/skills list` to see how the skills are named. Copilot asks questions through its own `ask_user` tool or in plain text.
+
+**Web search in Copilot.** Source scripts (Learn, Reddit, GitHub, YouTube, forum, blogs feeds) work everywhere. Some Copilot clients have no web search tool, only URL fetch. There the plugin skips community-blog search, and every answer says so. To close the gap, add a web-search MCP server (with your own API key) to your client, and the plugin will use it.
+
+<details>
+<summary>Using your own model in GitHub Copilot (BYOK)</summary>
+
+The plugin works with any model that can call tools. Models don't change which tools the client offers, so the web-search note above applies to every model.
+
+- **VS Code:** open the model picker, choose **Manage Language Models** (or run *Chat: Manage Language Models*), then **Add Models**. Pick a built-in provider (Azure, Anthropic, Gemini, OpenAI and others), enter a group name and your API key, and select the model in Agent mode. For local models, use **Install Model Providers** and add a provider extension from the Marketplace (for example Foundry Toolkit for VS Code, or the official Ollama extension). For a self-hosted endpoint, choose **Custom Endpoint**. If the model doesn't appear, reload VS Code. Details: [VS Code language models](https://code.visualstudio.com/docs/copilot/customization/language-models).
+- **Copilot CLI:** set environment variables before running `copilot`, for example `COPILOT_PROVIDER_BASE_URL`, `COPILOT_MODEL`, and `COPILOT_PROVIDER_API_KEY` (plus `COPILOT_PROVIDER_TYPE` = `openai`, `azure` or `anthropic`). Details: [Copilot CLI BYOK](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-byok-models).
+- **Requirements:** the model must support tool calling (and streaming in the CLI), and about 128k tokens of context works best. Organisations can disable BYOK by policy.
+
+</details>
+
+**Why not Microsoft 365 Copilot?** Its skills run only in declarative agents (a Frontier preview), whose script sandbox has no network or persistent storage.
+
 ---
 
 ## Your first five minutes
@@ -104,6 +133,28 @@ git clone https://github.com/blaine12100/fabric-learning.git
    > What should I learn next?
 
 Skipped onboarding? No problem: the other skills offer it once and still answer you.
+
+---
+
+## See it in action
+
+Click a screenshot to open it full size.
+
+### GitHub Copilot (VS Code)
+
+[![A cited answer about Direct Lake fallback](screenshots/github-copilot-vscode/learn-direct-lake.png)](screenshots/github-copilot-vscode/learn-direct-lake.png)
+
+*fabric-learn: a researched answer with numbered citations and dated sources.*
+
+[![A month-by-month catch-up](screenshots/github-copilot-vscode/catchup-month-by-month.png)](screenshots/github-copilot-vscode/catchup-month-by-month.png)
+
+*fabric-catchup: a personalised, month-by-month digest.*
+
+### Claude Code
+
+[![Community tools and design inspiration for Power BI reports](screenshots/claude-code/tool-discovery.png)](screenshots/claude-code/tool-discovery.png)
+
+*fabric-learn, tool discovery: GitHub, Reddit and Learn results with stars and dates, and a "Not covered" line when a source was unavailable.*
 
 ---
 
@@ -198,6 +249,7 @@ Everything lives in plain files on your machine:
 - **No personal data.** The helper rejects email addresses and tenant or workspace IDs outright.
 - **Read it, edit it, export it, delete it.** Ask *"export my learning history"* or *"delete all my fabric learning data"*. Every deletion shows you exactly what will go first.
 - Set `FABRIC_LEARNING_HOME` to keep the data somewhere else.
+- Claude Code and GitHub Copilot share this folder, so one profile serves both.
 
 ---
 
@@ -206,6 +258,8 @@ Everything lives in plain files on your machine:
 - **It researches live, so it isn't instant.** A deep question or a big catch-up can take a few minutes and a fair number of tokens. Simple questions stay light; heavy reading is handed to at most two sub-agents at a time, and only when it's worth it (see [How research runs](#how-research-runs-and-why-sub-agents-are-capped-at-two)).
 - **Some sites resist automation.** The Fabric Community site blocks page fetches, so the plugin uses its public RSS feeds instead. Those carry full post text, but no kudos or vote counts. Reddit's RSS is rate-limited, so community reaction is sometimes thin, and the digest says so when it is.
 - **Older community posts are harder to reach.** RSS feeds only return the newest or most relevant ~20–25 posts, with no paging. For a catch-up over a past month, forum, Ideas and Reddit coverage leans on web search and can be thinner than for the last few weeks.
+- **VS Code Copilot: research runs in the main agent.** In testing, sub-agents there couldn't run the plugin's scripts, so the plugin researches inline. Long catch-ups take longer, but they still use every source.
+- **Found a gap?** Open an [issue](https://github.com/blaine12100/fabric-learning/issues) with the client, your prompt and what was missing, and we'll investigate.
 - **It can still be wrong.** Citations make mistakes *checkable*, not impossible. Click through before you act, especially on preview features.
 
 ---
@@ -237,6 +291,7 @@ scripts/
   lib/                 shared library: cache, HTTP, feeds (RSS/Atom), dates, text, CLI runner, tool installs
 tests/                 offline unit tests (python3 -m unittest discover tests)
 assets/                README images
+screenshots/           screenshots of the skills in use
 docs/                  proposed features and design proposals (not used at runtime)
 ```
 
@@ -246,6 +301,7 @@ Issues and pull requests are welcome, especially:
 - New high-signal sources, which must be public and allowed to be accessed automatically.
 - Better question-type layouts.
 - Reports of an answer that cited a source which didn't support it. Include the prompt and the citation.
+- Reports of a coverage gap, for example a "Not covered" line you didn't expect, or a client (VS Code, Copilot CLI) where a source or the scripts didn't run. Include the client and version, your prompt, and the "Not covered" text.
 
 When you change a skill, keep the shared rules in `references/` as the single source of truth.
 
@@ -260,6 +316,14 @@ Source scripts are thin adapters over `scripts/lib/`, so a new source is usually
 5. Add tests for any parsing in `tests/`, and run `python3 -m unittest discover tests`.
 
 Scripts use only the Python standard library (3.9+) so it's plug and play.
+
+## About the author
+
+I'm Dhruv Marwha, a software engineer turned data engineer, with 5+ years in software engineering and 2+ in data. I built fabric-learning to get hands-on with agent development, and because Fabric changes so fast that keeping up with it became a job in itself.
+
+[Connect with me on LinkedIn](https://www.linkedin.com/in/dhruv-marwha/)
+
+---
 
 ## Acknowledgements
 

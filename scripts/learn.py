@@ -37,7 +37,7 @@ FABRIC_WORD = re.compile(r"\b(fabric|power bi|onelake|lakehouse|direct lake|dp-6
 PREVIEW_NOTE = re.compile(r"(this feature is (currently )?in (public )?preview|feature is in preview|is currently in preview)", re.I)
 
 
-FALLBACK = {"search": "web search on learn.microsoft.com", "page": "WebFetch the page",
+FALLBACK = {"search": "web search on learn.microsoft.com", "page": "fetch the page with a web fetch tool",
             "exam": "web search for the exam's study guide on learn.microsoft.com"}
 BOILERPLATE = re.compile(r"(?m)^\s*(Feedback|Summarize this article for me|In this article)\s*$")
 
