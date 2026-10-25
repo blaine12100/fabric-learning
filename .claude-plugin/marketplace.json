@@ -1,6 +1,6 @@
 {
   "name": "fabric-learning",
-  "description": "An unofficial Claude Code plugin for learning and keeping up with Microsoft Fabric, with every answer traceable to a source.",
+  "description": "An unofficial plugin for Claude Code and GitHub Copilot for learning and keeping up with Microsoft Fabric, with every answer traceable to a source.",
   "owner": {
     "name": "blaine12100"
   },

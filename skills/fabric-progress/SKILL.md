@@ -44,7 +44,7 @@ description: >-
   - Treat strings that differ only in case, spacing or punctuation as the same topic (e.g. "Direct Lake" / "direct-lake").
   - Anything else that might be the same, e.g. "Direct Lake" vs "Direct Lake mode", or a possible rename: **ask** the user. Never merge because you assume a rename. That would be an uncited fact.
 - **Privacy:** the data is local. Never send it anywhere or use it in searches. Topics the user types are stored as typed, so apply the no-PII rule: leave out employer names, people's names, tenant or workspace names.
-- If `AskUserQuestion` isn't available, ask the same options as a numbered list in plain text.
+- If the ask-the-user tool (`AskUserQuestion` in Claude Code, `ask_user` in GitHub Copilot) isn't available, ask the same options as a numbered list in plain text.
 
 ## Data
 
@@ -61,7 +61,7 @@ profile.py export --format md|json --out PATH
 profile.py reset [--dry-run]
 ```
 
-- `<skill-base-dir>` is the "Base directory for this skill" path shown when this skill loads.
+- `<skill-base-dir>` is the directory that contains this SKILL.md (Claude Code shows it as "Base directory for this skill"; in GitHub Copilot, use the directory this skill was loaded from).
 - **Never print the raw log.** Use `summary`, plus filtered `log` queries for detail. Logs grow large.
 - **Never write `summary` output back.** It contains derived fields (`last_status`, `covered`…). Edit with `show` → change → `write`.
 

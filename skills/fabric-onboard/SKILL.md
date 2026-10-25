@@ -52,7 +52,7 @@ python3 <skill-base-dir>/../../scripts/profile.py show              # prints pro
 python3 <skill-base-dir>/../../scripts/profile.py write  < new.json  # validates, stamps updated_at, writes atomically
 ```
 
-- `<skill-base-dir>` is the "Base directory for this skill" path shown when this skill loads.
+- `<skill-base-dir>` is the directory that contains this SKILL.md (Claude Code shows it as "Base directory for this skill"; in GitHub Copilot, use the directory this skill was loaded from).
 - **No PII, ever.** No names, email addresses, employers, tenant or workspace IDs, or credentials. The skill needs none of these to work, and this rule is never relaxed. See [Privacy](#privacy).
 
 ## Flow
@@ -91,7 +91,7 @@ python3 <skill-base-dir>/../../scripts/profile.py write  < new.json  # validates
 
 - **Use what the user already said.** If their message already answers a question (e.g. "I'm a C# developer" answers Field and Stack), don't ask it again. Preselect the answer, and list it in the confirmation summary so they can correct it. Skip a round if all its questions are already answered.
 
-- Use the `AskUserQuestion` tool when available:
+- Use the ask-the-user tool when available (`AskUserQuestion` in Claude Code, `ask_user` in GitHub Copilot):
   - It's quicker than typing.
   - It limits answers to values the other skills understand.
 - If it's unavailable (another client), ask the same questions as numbered options in plain text. Apply the same skip rules.
@@ -106,7 +106,7 @@ python3 <skill-base-dir>/../../scripts/profile.py write  < new.json  # validates
 | 3 | How you want to learn | everyone | picker, 2 questions |
 | 4 | Known topics & goals | everyone (optional answer) | plain text |
 
-- Each round is one `AskUserQuestion` call, so its questions appear as tabs of a single step.
+- Each round is one ask-the-user call, so its questions appear as tabs of a single step. If the client takes one question per call, ask them one after another.
 - Round 2's questions depend on Round 1 answers. That's why they're a separate round: one call can't branch on its own answers.
 
 **Round 1: who you are** (always, 3 questions)

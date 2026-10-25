@@ -42,7 +42,7 @@ description: >-
 ### 1. Load the learner profile
 
 - Run `python3 <skill-base-dir>/../../scripts/profile.py show`.
-  - `<skill-base-dir>` is the "Base directory for this skill" path shown when this skill loads.
+  - `<skill-base-dir>` is the directory that contains this SKILL.md (Claude Code shows it as "Base directory for this skill"; in GitHub Copilot, use the directory this skill was loaded from).
 - **Profile exists:** use it in steps 3, 6 and 7:
   - `preferences.depth` sets the default depth.
   - `background_fields`, `background_platforms` and `background_stack` say which analogies to use.
@@ -104,7 +104,7 @@ description: >-
   - One `AskUserQuestion` call with 1–3 focused questions, each with 2–4 options.
   - Always include a "Not sure — cover the common cases" option, so the user is never blocked.
   - Pre-fill from the profile where you can and say so, e.g. "Your profile says you come from Databricks; I'll compare against that unless you want otherwise".
-  - If `AskUserQuestion` isn't available, ask the same questions as numbered options in plain text.
+  - If the ask-the-user tool (`AskUserQuestion` in Claude Code, `ask_user` in GitHub Copilot) isn't available, ask the same questions as numbered options in plain text.
 - **Known topic check:**
   - **The question's main topic is itself in `known_topics`:** don't re-teach the basics. Offer a branch instead. A workload-level entry (e.g. "Data engineering") never triggers this branch for a specific topic inside it; it only raises the starting depth.
     - "What's changed since you learned it"
@@ -209,6 +209,7 @@ description: >-
 #### Citations
 
 - Use the shared [citation format](../../references/sourcing-rules.md#9-citation-format): numbered inline markers, and a **Sources** list at the end of every answer.
+- **No web search tool in this client** (check your tool list up front): when blog or community coverage matters to the question, add one line before Sources: "Web search isn't available in this client, so community blog coverage is missing." See [Client tools](../../references/sourcing-rules.md#client-tools).
 
 #### Layouts by type
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run several source-script calls concurrently in one go.
 
-Claude Code runs Bash tool calls one after another, so calling five source scripts separately
+Claude Code (and Copilot) run Bash tool calls one after another, so calling five source scripts separately
 costs five round-trips in sequence. gather.py takes a plan, runs every call in parallel threads,
 and returns all results in one JSON document.
 

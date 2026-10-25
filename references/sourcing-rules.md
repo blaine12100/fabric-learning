@@ -109,9 +109,25 @@
   - If a source fails (site down, rate-limited, tool missing), carry on with the others.
   - Report it in the output only if it leaves a real gap, e.g. "Reddit was unavailable, so community reaction is thin".
 
+### Client tools
+
+These skills run in Claude Code and GitHub Copilot (CLI and VS Code). Instructions name the capability; use the client's tool:
+
+| Capability | Claude Code | GitHub Copilot |
+|---|---|---|
+| Ask the user | `AskUserQuestion` | `ask_user` |
+| Web search | `WebSearch` | a web search tool, if the client has one |
+| Fetch a URL | `WebFetch` | `web_fetch` |
+| Dispatch a subagent | `Agent` with `fabric-researcher` | `task` with the `fabric-learning:fabric-researcher` agent |
+
+- **No web search tool? Skip that lane and report the gap.** Copilot CLI 1.0.97 had only `web_fetch`. Never invent results or search through a script. Then:
+  - Skip the `web` source and every "fall back to web search" step. Script sources and direct URL fetches still work.
+  - State it in the answer, e.g. "Web search isn't available in this client, so community blog coverage is missing", and mark claims that depended on it as unverified.
+  - Optional upgrade: the user can add a web-search MCP server with their own API key. It then appears as a search tool, and these skills use it automatically.
+
 ### Running the research
 
-- **Bash calls run one at a time in Claude Code; web searches and fetches issued in the same message run in parallel.** So:
+- **Bash calls run one at a time in Claude Code; web searches and fetches issued in the same message run in parallel.** (In Copilot, batch the web calls in one message too; if they run sequentially, nothing breaks.) So:
   - **Script sources** (community, learn, reddit, fabricstack, youtube, github): one `gather.py` call with a plan covering all of them. They run concurrently, and one call returns everything.
 
     ```bash
@@ -125,7 +141,7 @@
     EOF
     ```
 
-  - **Web sources** (web, roadmap, known issues, snippet look-ups, script fallbacks): put all the `WebSearch` / `WebFetch` calls in **one message**, so they run in parallel.
+  - **Web sources** (web, roadmap, known issues, snippet look-ups, script fallbacks): put all the web search / fetch calls in **one message** (skip searches if the client has no search tool; see [Client tools](#client-tools)), so they run in parallel.
   - Do both in the same message where possible.
 - **Subagents: decide automatically.** The user never has to ask, and shouldn't have to think about it. Subagents cost a lot (a multi-agent run uses roughly 15× the tokens of a chat: [Anthropic](https://www.anthropic.com/engineering/multi-agent-research-system)) and they count against the user's session limits, so the default is **none**.
 - **Hard limit: 0 to 2 subagents running at any moment.** Never more than 2 in one message, whatever the table says. More work waits for the next wave, or is done inline.
@@ -152,6 +168,8 @@
   - **Output:** findings-contract JSON only.
   - **Boundaries:** don't write the answer, don't touch the profile or log, ≤ 15 tool calls.
   - **The plugin root path** and any env prefix.
+- **When a worker can't run the scripts** (seen in VS Code Copilot: no shell, or no access to the plugin folder): the lead runs that slice's `gather.py` call itself, then reads or summarises the results inline. Don't accept a worker result built only from web fetches when script sources were in its brief, because the community forum and Ideas feeds can't be fetched any other way.
+- **Carry every worker's `gaps` into the answer.** Each gap a worker reports, and any "couldn't run" or "unavailable" you notice yourself, goes under "Not covered". Never mention a gap only in chat.
 - **When a subagent fails** (rate or session limit, timeout): don't relaunch in parallel. Finish that slice inline, or report it as a gap. A partial answer that says what's missing beats a failed run.
 - **The lead always:**
   - Merges and ranks the findings.

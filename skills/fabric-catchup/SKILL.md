@@ -49,7 +49,7 @@ description: >-
 ### 1. Load the profile and catch-up history
 
 - Run `python3 <skill-base-dir>/../../scripts/profile.py show`.
-  - `<skill-base-dir>` is the "Base directory for this skill" path shown when this skill loads.
+  - `<skill-base-dir>` is the directory that contains this SKILL.md (Claude Code shows it as "Base directory for this skill"; in GitHub Copilot, use the directory this skill was loaded from).
 - **No profile:**
   - Hand off to `fabric-onboard` in its "sent here by another skill" mode. The user can skip it.
   - If they skip, build an unpersonalised digest: same layout, but no "For you" section, everything ranked by significance.
@@ -123,7 +123,7 @@ description: >-
   - "Last month"
   - "A specific event"
   - "A specific area"
-- If `AskUserQuestion` isn't available, ask the same as numbered options in plain text.
+- If the ask-the-user tool (`AskUserQuestion` in Claude Code, `ask_user` in GitHub Copilot) isn't available, ask the same as numbered options in plain text.
 
 ### Long windows
 
@@ -286,6 +286,7 @@ Sources
 
 - **Leave out empty sections.** A quiet week might be only "For you" and "Tools & packages".
 - **Tags** ("🔥 widely discussed", "long-awaited") always cite their evidence: the discussion, or the Fabric Idea with its votes.
+- **No web search tool in this client** (e.g. GitHub Copilot CLI has only a URL fetch tool): always add "Web search isn't available in this client, so community blog coverage is missing." under "Not covered". Check your tool list before researching; do not wait for a search to fail. See [Client tools](../../references/sourcing-rules.md#client-tools).
 - **Community source unavailable** (e.g. Reddit rate-limited): add one line under "Not covered", e.g. "Reddit was unavailable, so community reaction is thin." Don't silently drop the community view.
 - **Depth:** `summary` drops the "Community:" lines; `deep` adds 1–2 more lines per "For you" item (prerequisites, regions, SKUs, as sourced).
 - **"Why it matters to you"** comes from the profile, e.g. "You work in RTI" or "You come from Databricks — this is Fabric's take on X". It's framing and needs no citation. Facts inside it still do.
