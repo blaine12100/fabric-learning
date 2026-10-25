@@ -258,6 +258,8 @@ Everything lives in plain files on your machine:
 - **It researches live, so it isn't instant.** A deep question or a big catch-up can take a few minutes and a fair number of tokens. Simple questions stay light; heavy reading is handed to at most two sub-agents at a time, and only when it's worth it (see [How research runs](#how-research-runs-and-why-sub-agents-are-capped-at-two)).
 - **Some sites resist automation.** The Fabric Community site blocks page fetches, so the plugin uses its public RSS feeds instead. Those carry full post text, but no kudos or vote counts. Reddit's RSS is rate-limited, so community reaction is sometimes thin, and the digest says so when it is.
 - **Older community posts are harder to reach.** RSS feeds only return the newest or most relevant ~20–25 posts, with no paging. For a catch-up over a past month, forum, Ideas and Reddit coverage leans on web search and can be thinner than for the last few weeks.
+- **VS Code Copilot: research runs in the main agent.** In testing, sub-agents there couldn't run the plugin's scripts, so the plugin researches inline. Long catch-ups take longer, but they still use every source.
+- **Found a gap?** Open an [issue](https://github.com/blaine12100/fabric-learning/issues) with the client, your prompt and what was missing, and we'll investigate.
 - **It can still be wrong.** Citations make mistakes *checkable*, not impossible. Click through before you act, especially on preview features.
 
 ---
@@ -299,6 +301,7 @@ Issues and pull requests are welcome, especially:
 - New high-signal sources, which must be public and allowed to be accessed automatically.
 - Better question-type layouts.
 - Reports of an answer that cited a source which didn't support it. Include the prompt and the citation.
+- Reports of a coverage gap, for example a "Not covered" line you didn't expect, or a client (VS Code, Copilot CLI) where a source or the scripts didn't run. Include the client and version, your prompt, and the "Not covered" text.
 
 When you change a skill, keep the shared rules in `references/` as the single source of truth.
 

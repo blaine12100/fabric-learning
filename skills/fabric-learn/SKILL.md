@@ -209,7 +209,7 @@ description: >-
 #### Citations
 
 - Use the shared [citation format](../../references/sourcing-rules.md#9-citation-format): numbered inline markers, and a **Sources** list at the end of every answer.
-- **No web search tool in this client** (check your tool list up front): when blog or community coverage matters to the question, add one line before Sources: "Web search isn't available in this client, so community blog coverage is missing." See [Client tools](../../references/sourcing-rules.md#client-tools).
+- **No web search tool in this client** (check your tool list up front): when blog or community coverage matters to the question, add this exact sentence on its own line before Sources, word for word: "Web search isn't available in this client, so community blog coverage is missing." See [Client tools](../../references/sourcing-rules.md#client-tools).
 
 #### Layouts by type
 

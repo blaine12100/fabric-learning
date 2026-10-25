@@ -118,12 +118,15 @@ These skills run in Claude Code and GitHub Copilot (CLI and VS Code). Instructio
 | Ask the user | `AskUserQuestion` | `ask_user` |
 | Web search | `WebSearch` | a web search tool, if the client has one |
 | Fetch a URL | `WebFetch` | `web_fetch` |
-| Dispatch a subagent | `Agent` with `fabric-researcher` | `task` with the `fabric-learning:fabric-researcher` agent |
+| Dispatch a subagent | `Agent` with `fabric-researcher` | `task` with the `fabric-learning:fabric-researcher` agent (Copilot CLI only; research inline in VS Code) |
 
 - **No web search tool? Skip that lane and report the gap.** Copilot CLI 1.0.97 had only `web_fetch`. Never invent results or search through a script. Then:
   - Skip the `web` source and every "fall back to web search" step. Script sources and direct URL fetches still work.
-  - State it in the answer, e.g. "Web search isn't available in this client, so community blog coverage is missing", and mark claims that depended on it as unverified.
+  - State it in the answer with this exact sentence: "Web search isn't available in this client, so community blog coverage is missing.", and mark claims that depended on it as unverified.
   - Optional upgrade: the user can add a web-search MCP server with their own API key. It then appears as a search tool, and these skills use it automatically.
+
+- **Scripts first; never write your own scraper.** Every source that has a script (community, learn, reddit, fabricstack, youtube, github) must be fetched through `gather.py` or its script. Do not write ad-hoc Python, `requests` or `curl` code to fetch these sources instead. Some sites block plain fetches (the Fabric Community and `blog.fabric.microsoft.com` return 403); the scripts use RSS and APIs that work. If a script fails, use its named fallback or report the gap.
+- **VS Code Copilot: research inline.** Research workers there may not get the main agent's shell access (seen in a catch-up: workers couldn't run the scripts). Don't dispatch `fabric-researcher` in VS Code; the lead slices the window itself (one month at a time) and runs `gather.py` for each slice. If you did dispatch one and it can't run scripts, follow the worker rule below.
 
 ### Running the research
 
